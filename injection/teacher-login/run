@@ -1,3 +1,5 @@
+#!/usr/bin/exec-suid --real -- /bin/python3 -I
+
 import flask
 
 app = flask.Flask(__name__)

@@ -1,0 +1,10 @@
+name: World
+challenges:
+  - id: teacher-login
+    name: Teacher Login
+  - id: class-cancelled
+    name: Class Cancellation
+  - id: class-cancelled-2
+    name: Class Cancellation 2
+  - id: overflow
+    name: Buffer Overflow

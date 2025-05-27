@@ -1,11 +1,13 @@
+#!/usr/bin/exec-suid --real -- /bin/python3 -I
+
 import flask
 
 app = flask.Flask(__name__)
 
-@app.route("/post", methods=["POST"])
+@app.route("/post", methods=["GET"])
 def post():
-    username = flask.request.form.get("user")
-    message = flask.request.form.get("message").replace("\n", "<br>")
+    username = flask.request.args.get("user")
+    message = flask.request.args.get("message").replace("\n", "<br>").replace("<", "(")
     messages =  f"""{username},{message}\n""" + open("messages.txt").read()
     open("messages.txt", "w").write(messages)
     return flask.redirect(f"/?user={username}")
@@ -31,7 +33,7 @@ def index():
     else:
         page += f"""
             <h2>Post as {user}</h2>
-            <form action="post" method="post">
+            <form action="post" method="get">
                 Message: <input name="message">
                 <input name="user" type=hidden value="{user}">
                 <input type=submit value="Post">
@@ -47,4 +49,4 @@ def index():
     return page
 
 open('messages.txt', 'w').close()
-app.run("0.0.0.0", 8082)
+app.run("0.0.0.0", 8083)

@@ -1,0 +1,50 @@
+import flask
+
+app = flask.Flask(__name__)
+
+@app.route("/login", methods=["POST"])
+def login():
+    for entry in open("users.txt"):
+        username,is_teacher,*_ = entry.strip().split(",")
+        if username == flask.request.form.get("user"):
+            if is_teacher.lower() == "yes":
+                return "<h1>Logged in as a teacher!!! YOU WIN</h1>"
+            else:
+                return """Logged in ... but not as a teacher. <a href="/">Try again?</a>"""
+
+    return """No such user... <a href="/">Try again?</a>"""
+
+@app.route("/add", methods=["POST"])
+def add():
+    username = flask.request.form.get("user")
+    user_database = f"{username},no\n" + open("users.txt").read().strip()
+    open("users.txt", "w").write(user_database)
+    return flask.redirect("/")
+
+@app.route("/", methods=["GET"])
+def index():
+    return f"""
+        <h1>The Login</h1>
+        Welcome! Can you log in as teacher?
+
+        <h2>The User Database</h2>
+        <pre>
+USERNAME,IS_TEACHER
+{open("users.txt").read()}
+        </pre>
+
+        <h2>Add a User</h2>
+        <form action="add" method="post">
+            Username: <input name="user">
+            <input type=submit value="Add">
+        </form>
+
+        <h2>Login</h2>
+        <form action="login" method="post">
+            Username: <input name="user">
+            <input type=submit value="Login">
+        </form>
+    """
+
+open('users.txt', 'w').close()
+app.run("0.0.0.0", 8081)

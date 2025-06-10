@@ -10,7 +10,7 @@ def login():
         username,is_teacher,*_ = entry.strip().split(",")
         if username == flask.request.form.get("user"):
             if is_teacher.lower() == "yes":
-                return "<h1>Logged in as a teacher!!! YOU WIN</h1>"
+                return f"<h1>Logged in as a teacher! here is your flag: {open('/flag').read()}</h1>"
             else:
                 return """Logged in ... but not as a teacher. <a href="/">Try again?</a>"""
 

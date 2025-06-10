@@ -1,4 +1,4 @@
-#!/usr/bin/exec-suid --real -- /bin/python3 -I
+#!/opt/pwn.college/python
 
 import flask
 

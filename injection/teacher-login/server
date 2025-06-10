@@ -49,4 +49,7 @@ USERNAME,IS_TEACHER
     """
 
 open('users.txt', 'w').close()
-app.run("0.0.0.0", 8081)
+
+app.secret_key = os.urandom(8)
+app.config['SERVER_NAME'] = f"challenge.localhost:80"
+app.run("challenge.localhost", 80)

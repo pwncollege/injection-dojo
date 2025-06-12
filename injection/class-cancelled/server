@@ -1,4 +1,4 @@
-#!/usr/bin/exec-suid --real -- /bin/python3 -I
+#!/usr/bin/env exec-suid --real -- python3 -I
 
 import flask
 import os

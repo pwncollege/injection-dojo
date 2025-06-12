@@ -1,4 +1,4 @@
-#!/usr/bin/env exec-suid --real -- python3 -I
+#!/usr/bin/env python3
 
 import flask
 import os
@@ -52,5 +52,5 @@ def index():
 open('messages.txt', 'w').close()
 
 app.secret_key = os.urandom(8)
-app.config['SERVER_NAME'] = f"challenge.localhost:80"
-app.run("challenge.localhost", 80)
+app.config['SERVER_NAME'] = f"challenge.localhost:8000"
+app.run("challenge.localhost", 8000)

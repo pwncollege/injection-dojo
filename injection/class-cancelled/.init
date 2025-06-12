@@ -1,4 +1,0 @@
-chown root:root /challenge/server
-chmod u+s /challenge/server
-chmod +x /challenge/server
-chmod 777 /flag

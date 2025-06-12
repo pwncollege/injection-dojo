@@ -1,0 +1,2 @@
+chown root:root /challenge/server
+chmod u+s /challenge/server

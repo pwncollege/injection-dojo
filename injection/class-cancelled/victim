@@ -32,9 +32,6 @@ if 80 not in open_ports:
     print("Service doesn't seem to be running?")
     sys.exit(1)
 
-if len(sys.argv) == 1:
-    print(f"Usage: {sys.argv[0]} URL")
-    sys.exit(1)
 challenge_url = "http://challenge.localhost:80"
 
 url_parsed = urllib.parse.urlparse(challenge_url)

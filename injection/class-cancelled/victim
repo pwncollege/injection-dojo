@@ -35,7 +35,7 @@ if 80 not in open_ports:
 if len(sys.argv) == 1:
     print(f"Usage: {sys.argv[0]} URL")
     sys.exit(1)
-challenge_url = sys.argv[1]
+challenge_url = "http://challenge.localhost:80"
 
 url_parsed = urllib.parse.urlparse(challenge_url)
 if url_parsed.hostname != "challenge.localhost":

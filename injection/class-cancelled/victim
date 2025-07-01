@@ -1,4 +1,4 @@
-#!/usr/bin/exec-suid -- /usr/local/bin/python3 -I
+#!/usr/bin/exec-suid -- /usr/bin/env python -I
 
 print(open('/flag').read())
 

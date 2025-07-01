@@ -1,6 +1,7 @@
-#!/usr/bin/exec-suid --real -- /bin/python3 -I
+#!/usr/bin/exec-suid -- /usr/bin/env python3 -I
 
 import flask
+import os
 
 app = flask.Flask(__name__)
 
@@ -49,4 +50,7 @@ def index():
     return page
 
 open('messages.txt', 'w').close()
-app.run("0.0.0.0", 8083)
+
+app.secret_key = os.urandom(8)
+app.config['SERVER_NAME'] = f"challenge.localhost:80"
+app.run("challenge.localhost", 80)

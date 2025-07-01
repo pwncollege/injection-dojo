@@ -1,4 +1,3 @@
-asa,<hr><b>teacher:</b> Class Is Canceled!
-asa,<hr><b>teacher:</b>Class Is Canceled!
-asa,ad
-asa,a
+teacher,Class Is Canceled!
+a,a
+a,(hr>(b>teacher:(/b> Class Is Canceled!

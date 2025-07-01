@@ -2,6 +2,8 @@ name: Content Injection
 challenges:
   - id: teacher-login
     name: Teacher Login
+  - id: teacher-login-2
+    name: Teacher Login 2
   - id: class-cancelled
     name: Class Cancellation
   - id: class-cancelled-2

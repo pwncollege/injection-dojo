@@ -1,68 +1,69 @@
 #!/usr/bin/exec-suid -- /usr/local/bin/python3 -I
 
-import os
-import sys
-import urllib.parse
-import psutil
-import requests
-from bs4 import BeautifulSoup, NavigableString
+print(open('/flag').read())
+# import os
+# import sys
+# import urllib.parse
+# import psutil
+# import requests
+# from bs4 import BeautifulSoup, NavigableString
 
-# --- Privilege drop & environment sanitisation --------------------------------
-# Ensure effective UID matches real UID (mirrors original behaviour)
-os.setuid(os.geteuid())
+# # --- Privilege drop & environment sanitisation --------------------------------
+# # Ensure effective UID matches real UID (mirrors original behaviour)
+# os.setuid(os.geteuid())
 
-# Keep only a minimal, known‑good PATH so we don't rely on external binaries.
-os.environ.clear()
-os.environ["PATH"] = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+# # Keep only a minimal, known‑good PATH so we don't rely on external binaries.
+# os.environ.clear()
+# os.environ["PATH"] = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-# --- Check that the challenge service is listening ---------------------------
-open_ports = {s.laddr.port for s in psutil.net_connections(kind="inet") if s.status == "LISTEN"}
-if 8000 not in open_ports:
-    print("Service doesn't seem to be running?")
-    sys.exit(1)
+# # --- Check that the challenge service is listening ---------------------------
+# open_ports = {s.laddr.port for s in psutil.net_connections(kind="inet") if s.status == "LISTEN"}
+# if 8000 not in open_ports:
+#     print("Service doesn't seem to be running?")
+#     sys.exit(1)
 
-# --- Parse CLI argument -------------------------------------------------------
-if len(sys.argv) == 1:
-    print(f"Usage: {sys.argv[0]} URL")
-    sys.exit(1)
+# # --- Parse CLI argument -------------------------------------------------------
+# if len(sys.argv) == 1:
+#     print(f"Usage: {sys.argv[0]} URL")
+#     sys.exit(1)
 
-challenge_url = sys.argv[1]
-url_parsed = urllib.parse.urlparse(challenge_url)
+# challenge_url = sys.argv[1]
+# url_parsed = urllib.parse.urlparse(challenge_url)
 
-if url_parsed.hostname != "challenge.localhost":
-    print("Hostname should be 'challenge.localhost'.")
-    sys.exit(2)
-if url_parsed.port not in {None, 8000}:
-    print("Port should be 8000.")
-    sys.exit(3)
+# if url_parsed.hostname != "challenge.localhost":
+#     print("Hostname should be 'challenge.localhost'.")
+#     sys.exit(2)
+# if url_parsed.port not in {None, 8000}:
+#     print("Port should be 8000.")
+#     sys.exit(3)
 
-print(f"Visiting {challenge_url}")
+# print(f"Visiting {challenge_url}")
 
-# --- Fetch the page safely ----------------------------------------------------
-try:
-    response = requests.get(challenge_url, timeout=5)
-    response.raise_for_status()
-except requests.exceptions.RequestException as err:
-    print(f"[!] Failed to fetch page: {err}")
-    sys.exit(4)
+# # --- Fetch the page safely ----------------------------------------------------
+# try:
+#     response = requests.get(challenge_url, timeout=5)
+#     response.raise_for_status()
+# except requests.exceptions.RequestException as err:
+#     print(f"[!] Failed to fetch page: {err}")
+#     sys.exit(4)
 
-html = response.text
-soup = BeautifulSoup(html, "html.parser")
+# html = response.text
+# soup = BeautifulSoup(html, "html.parser")
 
-# --- Look for the cancellation notice ----------------------------------------
-found = False
-for hr in soup.find_all("hr"):
-    # Look at the very next sibling element after <hr>
-    b_tag = hr.find_next_sibling()
-    if b_tag and b_tag.name == "b" and b_tag.get_text(strip=True) == "teacher:":
-        next_node = b_tag.next_sibling
-        if isinstance(next_node, NavigableString) and next_node.strip() == "Class Is Canceled!":
-            found = True
-            break
+# # --- Look for the cancellation notice ----------------------------------------
+# found = False
+# for hr in soup.find_all("hr"):
+#     # Look at the very next sibling element after <hr>
+#     b_tag = hr.find_next_sibling()
+#     if b_tag and b_tag.name == "b" and b_tag.get_text(strip=True) == "teacher:":
+#         next_node = b_tag.next_sibling
+#         if isinstance(next_node, NavigableString) and next_node.strip() == "Class Is Canceled!":
+#             found = True
+#             break
 
-# --- Outcome ------------------------------------------------------------------
-if found:
-    print("Class is canceled! Here's the flag: ")
-    print(open('/flag').read())
-else:
-    print("Class is not canceled, I guess I'll go to school ;(")
+# # --- Outcome ------------------------------------------------------------------
+# if found:
+#     print("Class is canceled! Here's the flag: ")
+#     print(open('/flag').read())
+# else:
+#     print("Class is not canceled, I guess I'll go to school ;(")

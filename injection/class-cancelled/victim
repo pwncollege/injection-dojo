@@ -1,60 +1,58 @@
 #!/usr/bin/exec-suid -- /usr/bin/env python3 -I
 
-print(open('/flag').read())
-
-import os
-import sys
-import urllib.parse
 import psutil
-import requests
+import urllib
+import atexit
+import time
+import sys
+import os
+
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, WebDriverException
+
 from bs4 import BeautifulSoup, NavigableString
 
-# --- Privilege drop & environment sanitisation --------------------------------
-# Ensure effective UID matches real UID (mirrors original behaviour)
 os.setuid(os.geteuid())
-
-# Keep only a minimal, known‑good PATH so we don't rely on external binaries.
 os.environ.clear()
 os.environ["PATH"] = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-# --- Check that the challenge service is listening ---------------------------
+options = FirefoxOptions()
+options.add_argument("--headless")
+service = FirefoxService(log_path="/dev/null")
+browser = webdriver.Firefox(service=service, options=options)
+atexit.register(browser.quit)
+
 open_ports = {s.laddr.port for s in psutil.net_connections(kind="inet") if s.status == "LISTEN"}
-if 8000 not in open_ports:
+if 80 not in open_ports:
     print("Service doesn't seem to be running?")
     sys.exit(1)
 
-# --- Parse CLI argument -------------------------------------------------------
 if len(sys.argv) == 1:
     print(f"Usage: {sys.argv[0]} URL")
     sys.exit(1)
-
 challenge_url = sys.argv[1]
-url_parsed = urllib.parse.urlparse(challenge_url)
 
+url_parsed = urllib.parse.urlparse(challenge_url)
 if url_parsed.hostname != "challenge.localhost":
     print("Hostname should be 'challenge.localhost'.")
     sys.exit(2)
-if url_parsed.port not in {None, 8000}:
-    print("Port should be 8000.")
+if url_parsed.port not in {None, 80}:
+    print("Port should be 80.")
     sys.exit(3)
 
 print(f"Visiting {challenge_url}")
+browser.get(challenge_url)
 
-# --- Fetch the page safely ----------------------------------------------------
-try:
-    response = requests.get(challenge_url, timeout=5)
-    response.raise_for_status()
-except requests.exceptions.RequestException as err:
-    print(f"[!] Failed to fetch page: {err}")
-    sys.exit(4)
-
-html = response.text
+html = browser.page_source
 soup = BeautifulSoup(html, "html.parser")
 
-# --- Look for the cancellation notice ----------------------------------------
 found = False
 for hr in soup.find_all("hr"):
-    # Look at the very next sibling element after <hr>
     b_tag = hr.find_next_sibling()
     if b_tag and b_tag.name == "b" and b_tag.get_text(strip=True) == "teacher:":
         next_node = b_tag.next_sibling
@@ -62,9 +60,10 @@ for hr in soup.find_all("hr"):
             found = True
             break
 
-# --- Outcome ------------------------------------------------------------------
 if found:
     print("Class is canceled! Here's the flag: ")
     print(open('/flag').read())
 else:
     print("Class is not canceled, I guess I'll go to school ;(")
+
+browser.quit()

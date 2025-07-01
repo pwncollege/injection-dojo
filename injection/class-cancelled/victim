@@ -1,12 +1,4 @@
-#!/usr/bin/env python3
-#!/usr/bin/exec-suid -- /usr/local/bin/python3
-"""
-Victim script rewritten to avoid Selenium.
-- The first shebang (`/usr/bin/env python3`) ensures normal site‑packages (e.g. `requests`, `bs4`) are available so imports succeed.
-- The second shebang line is retained for the exec‑suid wrapper used by Pwn College to grant the script the privileges needed to read `/flag`.  A second shebang is ignored by the kernel but is useful when the file is invoked explicitly via `exec-suid`.
-- Uses `requests` + BeautifulSoup instead of Selenium.
-- Retains privilege drop and environment sanitisation from original template.
-"""
+#!/usr/bin/exec-suid -- /usr/local/bin/python -I
 
 import os
 import sys

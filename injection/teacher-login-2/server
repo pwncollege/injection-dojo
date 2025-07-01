@@ -1,6 +1,7 @@
 #!/usr/bin/exec-suid -- /usr/bin/env python3 -I
 
 import flask, os, yaml
+from markupsafe import escape
 
 app = flask.Flask(__name__)
 
@@ -39,7 +40,7 @@ def index():
         <p>Welcome! Can you log in as <code>teacher</code>?</p>
 
         <h2>Current Database (users.yaml)</h2>
-        <pre>{flask.escape(db_contents)}</pre>
+        <pre>{escape(db_contents)}</pre>
 
         <h2>Add a User</h2>
         <form action="/add" method="post">

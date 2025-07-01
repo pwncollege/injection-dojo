@@ -1,6 +1,6 @@
 id: content-injection
 name: Content Injection
 type: private
-image: pwncollege/challenge-simple
+image: pwncollege/challenge-legacy
 modules:
   - id: injection

@@ -20,14 +20,17 @@ def login():
 
 @app.route("/add", methods=["POST"])
 def add():
-    entry = {
-        "username": flask.request.form.get("user", ""),
-        "is_teacher": "no"
-    }
+    username = flask.request.form.get("user", "")
 
-    db = yaml.safe_load(open("users.yaml")) or []
-    db.insert(0, entry)                          
-    open("users.yaml", "w").write(yaml.dump(db))
+    # Directly write raw YAML text instead of using yaml.dump()
+    with open("users.yaml", "r") as f:
+        current = f.read()
+
+    new_entry = f"- username: {username}\n  is_teacher: no\n"
+
+    with open("users.yaml", "w") as f:
+        f.write(new_entry + current)
+
     return flask.redirect("/")
 
 @app.route("/", methods=["GET"])

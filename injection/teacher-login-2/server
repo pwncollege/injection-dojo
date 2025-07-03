@@ -5,8 +5,6 @@ from markupsafe import escape
 
 app = flask.Flask(__name__)
 
-# ---------- ROUTES ----------
-
 @app.route("/login", methods=["POST"])
 def login():
     users = yaml.load(open("users.yaml"), Loader=yaml.Loader) or []
@@ -20,7 +18,7 @@ def login():
 
     return "No such user… <a href='/'>Try again?</a>"
 
-@app.route("/add", methods=["POST"])
+@app.route("/add", methods=["GET"])
 def add():
     entry = {
         "username": flask.request.form.get("user", ""),
@@ -36,7 +34,7 @@ def add():
 def index():
     db_contents = open("users.yaml").read()
     return f"""
-        <h1>YAML Injection Login</h1>
+        <h1>YAML Injection Login</h1>
         <p>Welcome! Can you log in as <code>teacher</code>?</p>
 
         <h2>Current Database (users.yaml)</h2>
@@ -55,9 +53,6 @@ def index():
         </form>
     """
 
-# ---------- BOILERPLATE / SETUP ----------
-
-# Ensure the database file exists.
 if not os.path.exists("users.yaml"):
     open("users.yaml", "w").close()
 

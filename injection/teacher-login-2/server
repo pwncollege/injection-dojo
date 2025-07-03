@@ -11,10 +11,9 @@ def login():
 
     username = flask.request.form.get("user", "")
     for entry in users:
-        if entry.get("username") == username:
-            if str(entry.get("is_teacher", "no")).lower() == "yes":
-                return f"<p>Logged in as a teacher!<br/>{open('/flag').read()}</p>"
-            return "Logged in … but not as a teacher. <a href='/'>Try again?</a>"
+        if entry.get("is_teacher") in ("yes", "true", True):
+            return f"<p>Logged in as a teacher!<br/>{open('/flag').read()}</p>"
+        return "Logged in … but not as a teacher. <a href='/'>Try again?</a>"
 
     return "No such user… <a href='/'>Try again?</a>"
 

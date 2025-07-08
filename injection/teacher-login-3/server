@@ -4,6 +4,10 @@ import flask, os, yaml
 from markupsafe import escape
 
 app = flask.Flask(__name__)
+try: 
+    os.remove("users.yaml")
+except:
+    print("Creating new YAML file...")
 
 @app.route("/login", methods=["POST"])
 def login():

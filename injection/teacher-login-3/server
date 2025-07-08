@@ -18,7 +18,7 @@ def login():
 
 @app.route("/add", methods=["GET"])
 def add():
-    username = flask.request.form.get("user", "")
+    username = flask.request.args.get("user", "")
 
     with open("users.yaml", "r") as f:
         current = f.read()

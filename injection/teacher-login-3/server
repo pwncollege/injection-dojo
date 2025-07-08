@@ -41,7 +41,7 @@ def index():
         <pre>{escape(db_contents)}</pre>
 
         <h2>Add a User</h2>
-        <form action="/add" method="post">
+        <form action="/add" method="get">
             Username: <input type="text" name="user" size="60" autocomplete="off"><br>
             <input type="submit" value="Add">
         </form>

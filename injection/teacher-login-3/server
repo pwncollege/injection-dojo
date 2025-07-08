@@ -4,10 +4,6 @@ import flask, os, yaml
 from markupsafe import escape
 
 app = flask.Flask(__name__)
-try: 
-    os.remove("users.yaml")
-except:
-    print("Creating new YAML file...")
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -58,6 +54,9 @@ def index():
     """
 
 if not os.path.exists("users.yaml"):
+    open("users.yaml", "w").close()
+else:
+    os.remove("users.yaml")
     open("users.yaml", "w").close()
 
 app.secret_key = os.urandom(8)

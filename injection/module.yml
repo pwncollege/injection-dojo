@@ -6,6 +6,10 @@ challenges:
     name: Teacher Login 2
   - id: teacher-login-3
     name: Teacher Login 3
+  - id: teacher-login-4
+    name: Teacher Login 4
+  - id: teacher-login-5
+    name: Teacher Login 5
   - id: class-cancelled
     name: Class Cancellation
   - id: class-cancelled-2

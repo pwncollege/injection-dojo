@@ -16,7 +16,7 @@ def login():
         return "Logged in … but not as a teacher. <a href='/'>Try again?</a>"
     return "No such user… <a href='/'>Try again?</a>"
 
-@app.route("/add", methods=["GET"])
+@app.route("/add", methods=["POST"])
 def add():
     username = flask.request.form.get("user", "")
 

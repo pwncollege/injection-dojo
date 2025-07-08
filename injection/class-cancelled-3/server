@@ -9,7 +9,7 @@ app = flask.Flask(__name__)
 def post():
     username = flask.request.args.get("user")
     message = flask.request.args.get("message")
-    message = message.replace("\n", "<br>").replace("<", "(")
+    #message = message.replace("\n", "<br>").replace("<", "(")
     messages = f"{username},{message}\n" + open("messages.txt").read()
     open("messages.txt", "w").write(messages)
 

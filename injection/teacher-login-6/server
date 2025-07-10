@@ -1,0 +1,81 @@
+#!/usr/bin/exec-suid -- /usr/bin/env python3 -I
+
+import os, flask, xml.etree.ElementTree as ET
+from markupsafe import escape
+
+app = flask.Flask(__name__)
+
+@app.route("/login", methods=["POST"])
+def login():
+    try:
+        tree = ET.parse("users.xml")
+        root = tree.getroot()
+    except Exception:
+        return "Error reading users.xml"
+
+    username = flask.request.form.get("user", "")
+    
+    for user in root.findall("user"):
+        name = user.findtext("username", default="")
+        teacher = user.findtext("is_teacher", default="no")
+        if name == username and teacher in ("yes", "true", "1"):
+            return f"<p>Logged in as a teacher!<br/>{open('/flag').read()}</p>"
+        elif name == username:
+            return "Logged in … but not as a teacher. <a href='/'>Try again?</a>"
+    
+    return "No such user… <a href='/'>Try again?</a>"
+
+@app.route("/add", methods=["POST"])
+def add():
+    username = flask.request.form.get("user", "")
+
+    try:
+        tree = ET.parse("users.xml")
+        root = tree.getroot()
+    except Exception:
+        root = ET.Element("users")
+        tree = ET.ElementTree(root)
+
+    new_user = ET.SubElement(root, "user")
+    name_el = ET.SubElement(new_user, "username")
+    name_el.text = username
+    is_teacher_el = ET.SubElement(new_user, "is_teacher")
+    is_teacher_el.text = "no"
+
+    tree.write("users.xml")
+    return flask.redirect("/")
+
+@app.route("/", methods=["GET"])
+def index():
+    try:
+        db_contents = open("users.xml").read()
+    except:
+        db_contents = "(empty or corrupted XML)"
+
+    return f"""
+        <h1>XML Injection Login</h1>
+        <p>Welcome! Can you log in as <code>teacher</code>?</p>
+
+        <h2>Current Database (users.xml)</h2>
+        <pre>{escape(db_contents)}</pre>
+
+        <h2>Add a User</h2>
+        <form action="/add" method="post">
+            Username: <input type="text" name="user" size="60" autocomplete="off"><br>
+            <input type="submit" value="Add">
+        </form>
+
+        <h2>Login</h2>
+        <form action="/login" method="post">
+            Username: <input type="text" name="user" size="60" autocomplete="off"><br>
+            <input type="submit" value="Login">
+        </form>
+    """
+
+if not os.path.exists("users.xml"):
+    with open("users.xml", "w") as f:
+        f.write("<users></users>")
+
+app.secret_key = os.urandom(8)
+app.config["SERVER_NAME"] = "challenge.localhost:80"
+app.run("challenge.localhost", 80)

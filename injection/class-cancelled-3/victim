@@ -44,16 +44,16 @@ for _ in range(10):
         alert = browser.switch_to.alert
         alert_text = alert.text.strip()
         print(f"Alert found: {alert_text}")
-        if alert_text == "PWNED":
+        if alert_text == "Class is Canceled!":
             print("Correct alert received! Here's the flag:")
             print(open("/flag").read())
         else:
-            print("Alert text was incorrect.")
+            print("Incorrect alert. Class scheduled as normal.")
         alert.accept()  # Close the alert box
         break
     except Exception:
         time.sleep(1)
 else:
-    print("No alert was triggered.")
+    print("No alert. Class scheduled as normal.")
 
 browser.quit()

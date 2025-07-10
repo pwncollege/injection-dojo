@@ -61,6 +61,6 @@ def index():
 if not os.path.exists("users.json"):
     open("users.json", "w").write("[]")
 
-app.secret_key            = os.urandom(8)
+app.secret_key = os.urandom(8)
 app.config["SERVER_NAME"] = "challenge.localhost:80"
 app.run("challenge.localhost", 80)

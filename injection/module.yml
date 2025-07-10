@@ -10,11 +10,11 @@ challenges:
     name: Teacher Login 4
   - id: teacher-login-5
     name: Teacher Login 5
-  - id: class-cancelled
+  - id: teacher-login-6
+    name: Teacher Login 6
+    id: class-cancelled
     name: Class Cancellation
   - id: class-cancelled-2
     name: Class Cancellation 2
   - id: class-cancelled-3
     name: Class Cancellation 3
-  - id: overflow
-    name: Buffer Overflow

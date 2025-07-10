@@ -12,7 +12,7 @@ challenges:
     name: Teacher Login 5
   - id: teacher-login-6
     name: Teacher Login 6
-    id: class-cancelled
+  - id: class-cancelled
     name: Class Cancellation
   - id: class-cancelled-2
     name: Class Cancellation 2

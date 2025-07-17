@@ -29,20 +29,15 @@ def login():
 def add():
     username = flask.request.form.get("user", "")
 
-    try:
-        tree = ET.parse("users.xml")
-        root = tree.getroot()
-    except Exception:
-        root = ET.Element("users")
-        tree = ET.ElementTree(root)
+    current = open("users.xml").read().strip() or "<users></users>"
 
-    new_user = ET.SubElement(root, "user")
-    name_el = ET.SubElement(new_user, "username")
-    name_el.text = username
-    is_teacher_el = ET.SubElement(new_user, "is_teacher")
-    is_teacher_el.text = "no"
+    if current.endswith("</users>"):
+        current_body = current[:-8]
+    else:
+        current_body = "<users>"
 
-    tree.write("users.xml")
+    new_entry = f"""<user><username>{username}</username><is_teacher>no</is_teacher></user>"""
+    open("users.xml", "w").write(f"{current_body}{new_entry}</users>")
     return flask.redirect("/")
 
 @app.route("/", methods=["GET"])

@@ -1,6 +1,6 @@
 id: content-injection
 name: Content Injection
 type: private
-image: ./Dockerfile
+image: pwncollege/challenge-legacy
 modules:
   - id: injection

@@ -10,7 +10,7 @@ app = flask.Flask(__name__)
 def login():
     username = flask.request.form.get("user", "")
     try:
-        tree = etree.parse("users.xml")
+        tree = etree.parse("/challenge/users.xml")
         root = tree.getroot()
     except Exception as e:
         return f"Error reading XML: {e}"
@@ -31,7 +31,7 @@ def add():
     username = flask.request.form.get("user", "")
 
     try:
-        tree = ET.parse("users.xml")
+        tree = ET.parse("/challenge/users.xml")
         root = tree.getroot()
     except Exception:
         root = ET.Element("users")
@@ -43,13 +43,13 @@ def add():
     is_teacher_el = ET.SubElement(new_user, "is_teacher")
     is_teacher_el.text = "no"
 
-    tree.write("users.xml")
+    tree.write("/challenge/users.xml")
     return flask.redirect("/")
 
 @app.route("/", methods=["GET"])
 def index():
     try:
-        db_contents = open("users.xml").read()
+        db_contents = open("/challenge/users.xml").read()
     except:
         db_contents = "(empty or corrupted XML)"
 
@@ -73,8 +73,8 @@ def index():
         </form>
     """
 
-if not os.path.exists("users.xml"):
-    with open("users.xml", "w") as f:
+if not os.path.exists("/challenge/users.xml"):
+    with open("/challenge/users.xml", "w") as f:
         f.write("<users></users>")
 
 app.secret_key = os.urandom(8)

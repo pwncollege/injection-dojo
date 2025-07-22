@@ -7,7 +7,7 @@ app = flask.Flask(__name__)
 
 @app.route("/login", methods=["POST"])
 def login():
-    for entry in open("users.txt"):
+    for entry in open("/challenge/users.txt"):
         username,is_teacher,*_ = entry.strip().split(",")
         if username == flask.request.form.get("user"):
             if is_teacher.lower() == "yes":
@@ -20,8 +20,8 @@ def login():
 @app.route("/add", methods=["POST"])
 def add():
     username = flask.request.form.get("user")
-    user_database = f"{username},no\n" + open("users.txt").read().strip()
-    open("users.txt", "w").write(user_database)
+    user_database = f"{username},no\n" + open("/challenge/users.txt").read().strip()
+    open("/challenge/users.txt", "w").write(user_database)
     return flask.redirect("/")
 
 @app.route("/", methods=["GET"])
@@ -33,7 +33,7 @@ def index():
         <h2>The User Database</h2>
         <pre>
 USERNAME,IS_TEACHER
-{open("users.txt").read()}
+{open("/challenge/users.txt").read()}
         </pre>
 
         <h2>Add a User</h2>
@@ -49,7 +49,7 @@ USERNAME,IS_TEACHER
         </form>
     """
 
-open('users.txt', 'w').close()
+open('/challenge/users.txt', 'w').close()
 
 app.secret_key = os.urandom(8)
 app.config['SERVER_NAME'] = f"challenge.localhost:80"

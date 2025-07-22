@@ -8,7 +8,7 @@ app = flask.Flask(__name__)
 @app.route("/login", methods=["POST"])
 def login():
     try:
-        tree = ET.parse("users.xml")
+        tree = ET.parse("/challenge/users.xml")
         root = tree.getroot()
     except Exception:
         return "Error reading users.xml"
@@ -29,7 +29,7 @@ def login():
 def add():
     username = flask.request.form.get("user", "")
 
-    current = open("users.xml").read().strip() or "<users></users>"
+    current = open("/challenge/users.xml").read().strip() or "<users></users>"
 
     if current.endswith("</users>"):
         current_body = current[:-8]
@@ -37,13 +37,13 @@ def add():
         current_body = "<users>"
 
     new_entry = f"""<user><username>{username}</username><is_teacher>no</is_teacher></user>"""
-    open("users.xml", "w").write(f"{current_body}{new_entry}</users>")
+    open("/challenge/users.xml", "w").write(f"{current_body}{new_entry}</users>")
     return flask.redirect("/")
 
 @app.route("/", methods=["GET"])
 def index():
     try:
-        db_contents = open("users.xml").read()
+        db_contents = open("/challenge/users.xml").read()
     except:
         db_contents = "(empty or corrupted XML)"
 
@@ -67,8 +67,8 @@ def index():
         </form>
     """
 
-if not os.path.exists("users.xml"):
-    with open("users.xml", "w") as f:
+if not os.path.exists("/challenge/users.xml"):
+    with open("/challenge/users.xml", "w") as f:
         f.write("<users></users>")
 
 app.secret_key = os.urandom(8)

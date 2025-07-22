@@ -5,14 +5,9 @@ from markupsafe import escape
 
 app = flask.Flask(__name__)
 
-try: 
-    os.remove("users.yaml")
-except:
-    pass
-
 @app.route("/login", methods=["POST"])
 def login():
-    users = yaml.load(open("users.yaml"), Loader=yaml.Loader) or []
+    users = yaml.load(open("/challenge/users.yaml"), Loader=yaml.Loader) or []
 
     username = flask.request.form.get("user", "")
     for entry in users:
@@ -25,19 +20,19 @@ def login():
 def add():
     username = flask.request.form.get("user", "")
 
-    with open("users.yaml", "r") as f:
+    with open("/challenge/users.yaml", "r") as f:
         current = f.read()
 
     new_entry = f"- username: {username}\n  is_teacher: no\n"
 
-    with open("users.yaml", "w") as f:
+    with open("/challenge/users.yaml", "w") as f:
         f.write(new_entry + current)
 
     return flask.redirect("/")
 
 @app.route("/", methods=["GET"])
 def index():
-    db_contents = open("users.yaml").read()
+    db_contents = open("/challenge/users.yaml").read()
     return f"""
         <h1>YAML Injection Login</h1>
         <p>Welcome! Can you log in as <code>teacher</code>?</p>
@@ -58,8 +53,8 @@ def index():
         </form>
     """
 
-if not os.path.exists("users.yaml"):
-    open("users.yaml", "w").close()
+if not os.path.exists("/challenge/users.yaml"):
+    open("/challenge/users.yaml", "w").close()
 
 app.secret_key = os.urandom(8)
 app.config["SERVER_NAME"] = "challenge.localhost:80"

@@ -10,8 +10,8 @@ def post():
     username = flask.request.args.get("user")
     message = flask.request.args.get("message")
     message = message.replace("\n", "<br>") #minimal sanitization
-    messages = f"{username},{message}\n" + open("messages.txt").read()
-    open("messages.txt", "w").write(messages)
+    messages = f"{username},{message}\n" + open("/challenge/messages.txt").read()
+    open("/challenge/messages.txt", "w").write(messages)
 
     return flask.redirect(f"/?user={username}")
 
@@ -47,15 +47,14 @@ def index():
             <a href="/">Logout</a>
         """
 
-    for entry in open("messages.txt"):
+    for entry in open("/challenge/messages.txt"):
         username, message = entry.split(",", 1)
         page += f"<hr><b>{username}:</b> {message}"
 
     return page
 
-open('messages.txt', 'w').close()
+open('/challenge/messages.txt', 'w').close()
 
 app.secret_key = os.urandom(8)
 app.config['SERVER_NAME'] = f"challenge.localhost:80"
 app.run("challenge.localhost", 80)
-

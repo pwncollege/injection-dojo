@@ -8,7 +8,7 @@ app = flask.Flask(__name__)
 @app.route("/login", methods=["POST"])
 def login():
     try:
-        users = json.loads(open("users.json").read() or "[]") 
+        users = json.loads(open("/challenge/users.json").read() or "[]") 
     except Exception:
         users = []
 
@@ -22,7 +22,7 @@ def login():
 def add():
     username = flask.request.form.get("user", "")
 
-    current = open("users.json").read().strip() or "[]"
+    current = open("/challenge/users.json").read().strip() or "[]"
 
     if current.startswith("[") and current.endswith("]"):
         current_body = current[1:-1].strip()
@@ -32,12 +32,12 @@ def add():
         current_body = ""
 
     new_entry = f'{{"username": "{username}", "is_teacher": "no"}}{current_body}'
-    open("users.json", "w").write(f"[{new_entry}]")
+    open("/challenge/users.json", "w").write(f"[{new_entry}]")
     return flask.redirect("/")
 
 @app.route("/", methods=["GET"])
 def index():
-    db_contents = open("users.json").read()
+    db_contents = open("/challenge/users.json").read()
     return f"""
         <h1>JSON Injection Login</h1>
         <p>Welcome! Can you log in as <code>teacher</code>?</p>
@@ -58,8 +58,8 @@ def index():
         </form>
     """
 
-if not os.path.exists("users.json"):
-    open("users.json", "w").write("[]")
+if not os.path.exists("/challenge/users.json"):
+    open("/challenge/users.json", "w").write("[]")
 
 app.secret_key = os.urandom(8)
 app.config["SERVER_NAME"] = "challenge.localhost:80"

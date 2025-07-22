@@ -1,0 +1,8 @@
+name: HTML/Javascript Injection
+challenges:
+  - id: class-cancelled
+    name: Class Cancellation
+  - id: class-cancelled-2
+    name: Class Cancellation 2
+  - id: class-cancelled-3
+    name: Class Cancellation 3

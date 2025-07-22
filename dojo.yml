@@ -3,4 +3,8 @@ name: Content Injection
 type: private
 image: pwncollege/challenge-legacy
 modules:
-  - id: injection
+  - id: csv
+  - id: yaml
+  - id: json
+  - id: xml
+  - id: html-js

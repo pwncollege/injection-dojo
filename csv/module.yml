@@ -1,0 +1,4 @@
+name: CSV Injection
+challenges:
+  - id: teacher-login
+    name: Teacher Login

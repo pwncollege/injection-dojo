@@ -1,0 +1,8 @@
+name: YAML Injection
+challenges:
+  - id: teacher-login-2
+    name: Teacher Login 2
+  - id: teacher-login-3
+    name: Teacher Login 3
+  - id: teacher-login-4
+    name: Teacher Login 4

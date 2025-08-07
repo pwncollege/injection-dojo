@@ -31,9 +31,6 @@ def index():
     elif "teacher" in user.lower():
         page += f"""
         <h1>Posting as the teacher is strictly prohibited!</h1>
-        <script>
-            const FLAG = "{os.environ.get("FLAG", "FLAG{not_set}")}";
-        </script>
         <a href="/">Logout</a>
         """
     else:

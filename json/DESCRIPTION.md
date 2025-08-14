@@ -1,0 +1,1 @@
+JSON injection is super similar to the YAML injection you just did. It focuses on manipulating the naive parsing of vulnerable inputs. In this module you will learn how to manipulate this slightly more complex form of injection through the understanding of JSON structure and logic.

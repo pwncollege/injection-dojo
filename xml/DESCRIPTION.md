@@ -1,0 +1,1 @@
+Extensible Markup Language (XML) injection is going to look exceedingly similar to CSV, YAML, and JSON injection some of the time, but will look completely different the rest of the time. It can present itself as simple data injection or even as XPath injection. This module's goal is to help you understand these different types.

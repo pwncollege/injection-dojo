@@ -7,3 +7,7 @@ Content injection happens when untrusted input masquerades as structure or code 
 By the end of this journey, you won’t just spot injection flaws—you’ll wield them to elevate privileges, read protected data, and understand exactly why they happen. 
 
 Let your content injection adventure begin—may your payloads be clever and your defenses unbreakable!  
+
+**Contributing:** This dojo is open source! Contribute challenges, fixes, and improvements [here](https://github.com/pwncollege/injection-dojo).
+
+**Questions?** Come chat on this dojo's [Discord channel](https://discord.com/channels/750635557666816031/1407084572897972254)!

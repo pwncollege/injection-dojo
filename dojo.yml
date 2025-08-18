@@ -1,6 +1,6 @@
 id: content-injection
 name: Content Injection
-type: private
+type: public
 image: pwncollege/challenge-injection
 award:
   emoji: 💉

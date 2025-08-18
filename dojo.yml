@@ -2,6 +2,8 @@ id: content-injection
 name: Content Injection
 type: private
 image: pwncollege/challenge-injection
+award:
+  emoji: 💉
 modules:
   - id: csv
   - id: yaml

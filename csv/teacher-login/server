@@ -1,31 +1,88 @@
 #!/usr/bin/exec-suid -- /usr/bin/python3 -I
 
-import flask
+import html
 import os
+import tempfile
+from pathlib import Path
 
-app = flask.Flask(__name__)
+from flask import Flask, redirect, request
+
+app = Flask(__name__)
+
+DB_PATH = Path("/challenge/users.txt")
+
+
+def read_db() -> str:
+    try:
+        with DB_PATH.open("r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return ""
+
 
 @app.route("/login", methods=["POST"])
 def login():
-    for entry in open("/challenge/users.txt"):
-        username,is_teacher,*_ = entry.strip().split(",")
-        if username == flask.request.form.get("user"):
-            if is_teacher.lower() == "yes":
-                return f"<p>Logged in as a teacher! Here is your flag:<br/>{open('/flag').read()}</p>"
-            else:
-                return """Logged in ... but not as a teacher. <a href="/">Try again?</a>"""
+    user = (request.form.get("user") or "").rstrip("\r\n")
 
-    return """No such user... <a href="/">Try again?</a>"""
+    try:
+        with DB_PATH.open("r", encoding="utf-8") as f:
+            for entry in f:
+                entry = entry.strip()
+
+                if not entry:
+                    continue
+
+                username, is_teacher, *_ = entry.split(",")
+
+                if username == user:
+                    if is_teacher.lower() == "yes":
+                        with open("/flag", "r") as flag:
+                            return f"<p>Logged in as a teacher! Here is your flag:<br/>{flag.read()}</p>"
+
+                    return """Logged in ... but not as a teacher. <a href="/">Try again?</a>"""
+
+        return """No such user... <a href="/">Try again?</a>"""
+    except FileNotFoundError:
+        DB_PATH.touch(exist_ok=True)
+
+        return """TOCTOU? <a href="/">Try again?</a>"""
+    except Exception:
+        return """YOU SHALL NOT PASS!!!
+        <form action="/reset" method="post" onsubmit="return confirm('Reset DB?');">
+            <input type="submit" value="Reset Database">
+        </form>
+        """
+
 
 @app.route("/add", methods=["POST"])
 def add():
-    username = flask.request.form.get("user")
-    user_database = f"{username},no\n" + open("/challenge/users.txt").read().strip()
-    open("/challenge/users.txt", "w").write(user_database)
-    return flask.redirect("/")
+    user = (request.form.get("user") or "").rstrip("\r\n")
+    data = read_db()
+
+    db_dir = DB_PATH.parent
+    with tempfile.NamedTemporaryFile(
+        "w", encoding="utf-8", dir=db_dir, delete=False
+    ) as tmp:
+        tmp_path = Path(tmp.name)
+        tmp.write(f"{user},no\n{data}".rstrip() + "\n")
+
+    os.replace(tmp_path, DB_PATH)
+
+    return redirect("/")
+
+
+@app.route("/reset", methods=["POST"])
+def reset():
+    with DB_PATH.open("w", encoding="utf-8") as f:
+        f.truncate(0)
+
+    return redirect("/")
+
 
 @app.route("/", methods=["GET"])
 def index():
+    data = read_db()
+
     return f"""
         <h1>The Login</h1>
         Welcome! Can you log in as teacher?
@@ -33,7 +90,7 @@ def index():
         <h2>The User Database</h2>
         <pre>
 USERNAME,IS_TEACHER
-{open("/challenge/users.txt").read()}
+{html.escape(data)}
         </pre>
 
         <h2>Add a User</h2>
@@ -47,10 +104,17 @@ USERNAME,IS_TEACHER
             Username: <input name="user">
             <input type=submit value="Login">
         </form>
+
+        <h2>Admin</h2>
+        <form action="/reset" method="post" onsubmit="return confirm('Reset DB?');">
+            <input type="submit" value="Reset Database">
+        </form>
     """
 
-open('/challenge/users.txt', 'w').close()
 
-app.secret_key = os.urandom(8)
-app.config['SERVER_NAME'] = f"challenge.localhost:80"
-app.run("challenge.localhost", 80)
+if __name__ == "__main__":
+    DB_PATH.touch(exist_ok=True)  # make sure db exists
+
+    app.secret_key = os.urandom(8)
+    app.config["SERVER_NAME"] = "challenge.localhost:80"
+    app.run("challenge.localhost", 80)
